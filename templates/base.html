@@ -172,16 +172,16 @@
                 <ul>
                   {% for category in categories %}
                     {% if forloop.counter <= 10 %}
-                      <li class="{% if category.get_children %}{% endif %}">
-                        <a href="shop-grid-right.html">
+                      <li class="{% if category.get_children %}has-children{% endif %}">
+                        <a href="#">
                           {% if category.icon.url %}
-                            <img width="19px" src="{{ category.icon.url }}" alt="" />
+                            <img width="19px" height="19px" src="{{ category.icon.url }}" class="mr-10" alt="" />
                           {% endif %}
                           {{ category.name|safe }}
                         </a>
                         {% if category.get_children %}
                           <div class="dropdown-menu">
-                            <ul class="mega-menu d-lg-flex navbar_flex_li">
+                            <ul class="mega-menu d-lg-flex">
                               <li class="mega-menu-col col-lg-7">
                                 <ul class="d-lg-flex">
                                   {% for sub_category in category.get_children %}
@@ -200,18 +200,14 @@
                                   {% endfor %}
                                 </ul>
                               </li>
-
                               <li class="mega-menu-col col-lg-5">
                                 <div class="header-banner2">
-                                  {% if category.img.url %}
-                                    <img src="{{ category.img.url }}" alt="menu_banner1" />
-                                    Banner
-                                  {% endif %}
+                                    <img width="200px" src="{{ category.img.url }}" alt="...">
                                 </div>
                                 <div class="header-banner2">
-                                  <img src="{{ category.icon.url }}" alt="menu_banner2" />
+                                    <img width="200px" src="{{ category.icon.url }}" alt="...">
                                 </div>
-                              </li>
+                            </li>
                             </ul>
                           </div>
                         {% endif %}
@@ -223,7 +219,10 @@
                     <ul class="more_slide_open" style="display: none;">
                       {% for category in categories %}
                         {% if forloop.counter >= 10 %}
-                          <li class="{% if category.get_children %}{% endif %}">
+                          <li class="
+                          {% if category.get_children %}
+                            has-children
+                          {% endif %}">
                             <a href="shop-grid-right.html">
                               {% if category.icon.url %}
                                 <img width="19px" src="{{ category.icon.url }}" alt="" />

@@ -15,6 +15,8 @@ def main_data(request):
     else:
         cartItem = []
 
+    
+
     context = {
         "categories": categories,
         "count_wish_list": count_wish_list,

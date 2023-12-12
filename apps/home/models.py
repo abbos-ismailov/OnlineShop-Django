@@ -22,6 +22,7 @@ class Category(MPTTModel, BaseModel):
     icon = models.ImageField(upload_to='category/icons', null=True, blank=True)
     img = models.ImageField(upload_to='category/images', null=True, blank=True)
     
+
     def __str__(self):
         return self.name
         
@@ -68,6 +69,7 @@ class Size(MPTTModel, BaseModel):
 
 class Product(BaseModel):
     title = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     brand = models.ForeignKey(Brands, on_delete=models.CASCADE, null=True, blank=True, related_name='products_brand')
     price = models.BigIntegerField()
     discount = models.IntegerField(default=0)
@@ -78,6 +80,7 @@ class Product(BaseModel):
     tags = models.ManyToManyField(Tags, blank=True, related_name='products_tags')
     discription_main = RichTextField()
     status = models.CharField(max_length=255, choices=STATUS, default='new')
+    stars_percent = models.IntegerField()
     
     @property
     def get_discount_price(self):
@@ -100,6 +103,7 @@ class Product(BaseModel):
         result = ProductReview.objects.filter(product=self.uuid).aggregate(avarage=Avg("stars"))
         if result['avarage']:
             percent = result['avarage'] * 100 / 5
+            self.stars_percent = int(percent)
             return int(percent)
         else:
             return 0

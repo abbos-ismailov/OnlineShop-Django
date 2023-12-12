@@ -47,6 +47,7 @@ class CreateCartView(View):
             messages.success(request, "Savatchaga tushdi")
             return redirect(url)
         
+
 class DeleteCartView(View):
     def get(self, request, uuid):
         url = request.META.get('HTTP_REFERER')
