@@ -3,9 +3,11 @@ from django.views.generic import View
 from .models import Wishlist, Cart, CartItem
 from django.contrib import messages
 from apps.home.models import Product
+from django.views.generic import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
-class CreatedWishListView(View):
+class CreatedWishListView(LoginRequiredMixin, View):
     def get(self, request, uuid):
         url = request.META.get("HTTP_REFERER")
         product = Product.objects.get(uuid=uuid)
@@ -21,7 +23,7 @@ class CreatedWishListView(View):
             return redirect(url) ### Qaysi urlda turgan bolsa shu joyga qaytaradi
 
 #### Zakaz qilish jarayoni
-class CreateCartView(View):
+class CreateCartView(LoginRequiredMixin,View):
     def get(self, request, uuid):
         url = request.META.get("HTTP_REFERER")
         product = Product.objects.get(uuid=uuid)
@@ -48,7 +50,7 @@ class CreateCartView(View):
             return redirect(url)
         
 
-class DeleteCartView(View):
+class DeleteCartView(LoginRequiredMixin, View):
     def get(self, request, uuid):
         url = request.META.get('HTTP_REFERER')
 

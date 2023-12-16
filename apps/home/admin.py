@@ -90,3 +90,5 @@ class ProductAdmin(admin.ModelAdmin):
         'title', 'uuid'
     )
 
+    ### Quyidagi manyToMany Boglangan field larni qulayroq korinishda chiqaradi
+    filter_horizontal = ("tags", "color", "size")

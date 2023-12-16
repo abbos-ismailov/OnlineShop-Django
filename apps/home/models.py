@@ -31,7 +31,8 @@ class Category(MPTTModel, BaseModel):
 class Brands(BaseModel):
     name = RichTextField()
     img = models.FileField(upload_to='brands/images', null=True, blank=True)
-   
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+
     def __str__(self):
         return self.name
     
@@ -68,8 +69,8 @@ class Size(MPTTModel, BaseModel):
 
 
 class Product(BaseModel):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name="category_products")
     title = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     brand = models.ForeignKey(Brands, on_delete=models.CASCADE, null=True, blank=True, related_name='products_brand')
     price = models.BigIntegerField()
     discount = models.IntegerField(default=0)
@@ -113,7 +114,6 @@ class Product(BaseModel):
         return self.title
     
     
-    
 class Banner(BaseModel):
     
     name = RichTextField()
@@ -131,9 +131,7 @@ class MonthlyBestSeller(BaseModel):
     img = models.ImageField(upload_to='banner/images', null=True, blank=True)
     products = models.ManyToManyField(Product, blank=True)
     def __str__(self):
-        return self.name
-    
-    
+        return self.name  
 
     
     

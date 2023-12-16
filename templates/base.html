@@ -73,7 +73,11 @@
                     </ul>
                   </li>
                   <li>
-                    <a href="page-login-register.html">Log In / Sign Up</a>
+                    {% if request.user.is_authenticated %}
+                      <a href="{% url 'accounts:logout' %}">Log out</a>
+                    {% else %}
+                      <a href="{% url 'accounts:login' %}">Log In / Sign Up</a>
+                    {% endif %}
                   </li>
                 </ul>
               </div>
@@ -110,46 +114,54 @@
                 <div class="header-action-icon-2">
                   <a href="shop-wishlist.html">
                     <img class="svgInject" alt="wowy" src="{% static 'assets/imgs/theme/icons/icon-heart.svg' %}" />
-                    <span class="pro-count blue">{{ count_wish_list|length }}</span>
+                    {% if request.user.is_authenticated %}
+                      {% if count_wish_list %}
+                        <span class="pro-count blue">{{ count_wish_list|length }}</span>
+                      {% endif %}
+                    {% endif %}
                   </a>
                 </div>
                 <div class="header-action-icon-2">
                   <a class="mini-cart-icon" href="shop-cart.html">
                     <img alt="wowy" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}" />
-                    <span class="pro-count blue">{{ cartItem|length }}</span>
+                    {% if request.user.is_authenticated %}
+                      <span class="pro-count blue">{{ cartItem|length }}</span>
+                    {% endif %}
                   </a>
-                  {% if cartItem|length %}
-                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                      <ul>
-                        {% for cartItem in cartItem %}
-                          <li>
-                            <div class="shopping-cart-img">
-                              <a href="shop-product-right.html"><img alt="{{ cartItem.product.title|slice:4 }}.." src="{{ cartItem.product.product_image.first.img.url }}" /></a>
-                            </div>
-                            <div class="shopping-cart-title">
-                              <h4><a href="shop-product-right.html">{{ cartItem.product.title|slice:20 }}...</a></h4>
-                              {% if cartItem.product.discount %}
-                                <h3><span>{{ cartItem.quantity }} ×</span>{{ cartItem.product.get_discount_price|floatformat:0 }} so'm</h3>
-                              {% else %}
-                                <h3><span>{{ cartItem.quantity }} ×</span>{{ cartItem.product.price }} so'm</h3>
-                              {% endif %}
-                            </div>
-                            <div class="shopping-cart-delete">
-                              <a href="{% url 'order:delete_cart_item' cartItem.uuid %}"><i class="far fa-times"></i></a>
-                            </div>
-                          </li>
-                        {% endfor %}
-                      </ul>
-                      <div class="shopping-cart-footer">
-                        <div class="shopping-cart-total">
-                          <h4>Total <span>{{ total_all_price }} so'm</span></h4>
-                        </div>
-                        <div class="shopping-cart-button">
-                          <a href="shop-cart.html">View cart</a>
-                          <a href="shop-checkout.html">Checkout</a>
+                  {% if request.user.is_authenticated %}
+                    {% if cartItem|length %}
+                      <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                        <ul>
+                          {% for cartItem in cartItem %}
+                            <li>
+                              <div class="shopping-cart-img">
+                                <a href="shop-product-right.html"><img alt="{{ cartItem.product.title|slice:4 }}.." src="{{ cartItem.product.product_image.first.img.url }}" /></a>
+                              </div>
+                              <div class="shopping-cart-title">
+                                <h4><a href="shop-product-right.html">{{ cartItem.product.title|slice:20 }}...</a></h4>
+                                {% if cartItem.product.discount %}
+                                  <h3><span>{{ cartItem.quantity }} ×</span>{{ cartItem.product.get_discount_price|floatformat:0 }} so'm</h3>
+                                {% else %}
+                                  <h3><span>{{ cartItem.quantity }} ×</span>{{ cartItem.product.price }} so'm</h3>
+                                {% endif %}
+                              </div>
+                              <div class="shopping-cart-delete">
+                                <a href="{% url 'order:delete_cart_item' cartItem.uuid %}"><i class="far fa-times"></i></a>
+                              </div>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                        <div class="shopping-cart-footer">
+                          <div class="shopping-cart-total">
+                            <h4>Total <span>{{ total_all_price }} so'm</span></h4>
+                          </div>
+                          <div class="shopping-cart-button">
+                            <a href="shop-cart.html">View cart</a>
+                            <a href="shop-checkout.html">Checkout</a>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    {% endif %}
                   {% endif %}
                 </div>
                 <div class="header-action-icon-2">
@@ -172,7 +184,9 @@
                 <ul>
                   {% for category in categories %}
                     {% if forloop.counter <= 10 %}
-                      <li class="{% if category.get_children %}has-children{% endif %}">
+                      <li class="
+                      {% if category.get_children %}{% endif %}
+                      ">
                         <a href="#">
                           {% if category.icon.url %}
                             <img width="19px" height="19px" src="{{ category.icon.url }}" class="mr-10" alt="" />
@@ -202,12 +216,9 @@
                               </li>
                               <li class="mega-menu-col col-lg-5">
                                 <div class="header-banner2">
-                                    <img width="200px" src="{{ category.img.url }}" alt="...">
+                                  <img src="{{ category.img.url }}" alt="..." />
                                 </div>
-                                <div class="header-banner2">
-                                    <img width="200px" src="{{ category.icon.url }}" alt="...">
-                                </div>
-                            </li>
+                              </li>
                             </ul>
                           </div>
                         {% endif %}
@@ -220,12 +231,10 @@
                       {% for category in categories %}
                         {% if forloop.counter >= 10 %}
                           <li class="
-                          {% if category.get_children %}
-                            has-children
-                          {% endif %}">
+                          {% if category.get_children %}{% endif %}">
                             <a href="shop-grid-right.html">
                               {% if category.icon.url %}
-                                <img width="19px" src="{{ category.icon.url }}" alt="" />
+                                <img width="19px" src="{{ category.icon.url }}" alt="..." />
                               {% endif %}
                               {{ category.name|safe }}
                             </a>
@@ -284,7 +293,7 @@
                   {% for cat in categories %}
                     {% if forloop.counter <= 5 %}
                       <li>
-                        <a href="#">{{ cat.name|safe }}</a>
+                        <a href="{% url 'products:parent_category' cat.uuid %}">{{ cat.name|safe }}</a>
                       </li>
                     {% endif %}
                   {% endfor %}
@@ -652,8 +661,8 @@
       </div>
     </div>
 
-    <section class="container">
-      {% if messages %}
+    {% if messages %}
+      <section class="container">
         {% for message in messages %}
           {% if message.tags == 'error' %}
             <div class="alert alert-danger" role="alert">{{ message }}</div>
@@ -661,8 +670,8 @@
             <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
           {% endif %}
         {% endfor %}
-      {% endif %}
-    </section>
+      </section>
+    {% endif %}
 
     {% block content %}
 
@@ -835,6 +844,7 @@
     <script src="{% static 'assets/js/plugins/isotope.js' %}"></script>
     <script src="{% static 'assets/js/plugins/scrollup.js' %}"></script>
     <script src="{% static 'assets/js/plugins/jquery.vticker-min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/jquery.theia.sticky.js' %}"></script>
     <!-- Template JS -->
     <script src="{% static 'assets/js/main.js' %}"></script>
     {% block script %}
