@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from .forms import CustomAuthForm, UserCreationForm
 from django.contrib.auth import login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
 # Create your views here.
@@ -60,3 +61,11 @@ class RegisterView(View):
             context = {"form": create_form}
 
             return render(request, "accounts/register.html", context)
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request): 
+        context = {
+
+        }
+        return render(request, "accounts/profile.html", context)
+    

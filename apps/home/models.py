@@ -69,7 +69,7 @@ class Size(MPTTModel, BaseModel):
 
 
 class Product(BaseModel):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name="category_products")
+    category = models.ManyToManyField(Category, null=True, blank=True, related_name="category_products")
     title = models.CharField(max_length=255)
     brand = models.ForeignKey(Brands, on_delete=models.CASCADE, null=True, blank=True, related_name='products_brand')
     price = models.BigIntegerField()

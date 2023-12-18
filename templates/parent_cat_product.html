@@ -127,6 +127,12 @@
             <div class="pagination-area mt-15 mb-md-5 mb-lg-0">
               <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-start">
+
+                  {% if parent_cat_product.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="#"><i class="fa fa-angle-right"></i></a>
+                  </li>
+                  {% endif %}
                   <li class="page-item active">
                     <a class="page-link" href="#">01</a>
                   </li>
@@ -246,8 +252,6 @@
               </div>
               <!-- Widget ads -->
               <div class="sidebar-widget widget-ads mb-30">
-                {% comment %} {% for monthlyBestSeller in monthlyBestSeller %} {% endcomment %}
-                  {% comment %} {% if  %}{% endif %} {% endcomment %}
                   <div class="banner-img banner-1 wow fadeIn animated" style="visibility: visible; animation-name: fadeIn;">
                     <img class="border-radius-10" src="{{monthlyBestSeller.0.img.url}}" alt="" />
                     <div class="banner-text">
@@ -255,7 +259,6 @@
                       <a href="shop-grid-right.html">Shop Now <i class="fa fa-arrow-right"></i></a>
                     </div>
                   </div>
-                {% comment %} {% endfor %} {% endcomment %}
               </div>
               <!-- Widget categories -->
               <div class="sidebar-widget widget_categories mb-50 p-30 bg-grey border-radius-10">

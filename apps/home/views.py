@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.core.paginator import Paginator
+
 from .models import (
     Banner,
     BannerMiddle,
@@ -63,9 +66,13 @@ class ParentCategory(View):
     
         brands = Brands.objects.filter(is_active=True, category__uuid=uuid)
 
+        page_size = request.GET.get("page_size", 2)
+        paginator = Paginator(parent_cat_product, page_size)
+        page_num = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_num)
 
         context = {
-            "parent_cat_product": parent_cat_product,
+            "parent_cat_product": page_obj,
             "choosed_category": choosed_category,
             "brands": brands,
         }

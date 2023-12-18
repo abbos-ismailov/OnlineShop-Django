@@ -165,7 +165,9 @@
                   {% endif %}
                 </div>
                 <div class="header-action-icon-2">
-                  <a href="page-login-register.html"><img alt="wowy" src="{% static 'assets/imgs/theme/icons/icon-user.svg' %}" /></a>
+                  <a href="{% url 'accounts:profile' %}">
+                    <img alt="wowy" src="{% static 'assets/imgs/theme/icons/icon-user.svg' %}" />
+                  </a>
                 </div>
               </div>
             </div>
