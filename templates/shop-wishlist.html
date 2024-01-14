@@ -1,0 +1,69 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <main class="main">
+    <div class="page-header breadcrumb-wrap">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="{% url 'products:home' %}" rel="nofollow">Home</a>
+          <span></span> Shop
+        </div>
+      </div>
+    </div>
+    <section class="mt-60 mb-60">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table shopping-summery text-center">
+                <thead>
+                  <tr class="main-heading">
+                    <th scope="col" colspan="2">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Stock Status</th>
+                    <th scope="col">Action</th>
+                    <th scope="col">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for wished_item in shop_wishlist %}
+                    <tr> 
+                      <td class="image product-thumbnail">
+                        <img src="{{ wished_item.product.product_image.first.img.url }}" alt="wished_item.product.title" />
+                      </td>
+                      <td class="product-des product-name">
+                        <p class="product-name">
+                          <a href="{% url 'order:product_detail' wished_item.product.uuid %}">{{ wished_item.product.title }}</a>
+                        </p>
+                        <p class="font-xs">
+                          {{ wished_item.product.brand }}
+                        </p>
+                      </td>
+                      <td class="price" data-title="Price">
+                        {% if wished_item.product.discount %}
+                        <span>{{ wished_item.product.get_discount_price|floatformat:0 }} so'm</span>
+                        <s>{{ wished_item.product.price }} so'm</s>
+                        {% else %}
+                        <span>{{ wished_item.product.price }} so'm</span>
+                        {% endif %}
+                      </td>
+                      <td class="text-center" data-title="Stock">
+                        <span class="color3 font-weight-bold">In Stock</span>
+                      </td>
+                      <td class="text-right" data-title="Cart">
+                        <a href="{% url 'order:create_cart' wished_item.product.uuid %}" class="btn btn-rounded btn-sm"><i class="far fa-shopping-bag mr-5"></i>Add to cart</a>
+                      </td>
+                      <td class="action" data-title="Remove">
+                        <a href="{% url 'order:delete_wish_item' wished_item.product.uuid %}"><i class="fa fa-trash-alt"></i></a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

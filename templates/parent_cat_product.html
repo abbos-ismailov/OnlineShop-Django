@@ -7,7 +7,7 @@
         <div class="page-header breadcrumb-wrap">
           <div class="container">
             <div class="breadcrumb">
-              <a href="index.html" rel="nofollow">Home</a>
+              <a href="{% url 'products:home' %}" rel="nofollow">Home</a>
               <span></span> Shop
             </div>
           </div>
@@ -27,54 +27,22 @@
                       <span><i class="fa fa-th"></i>Show:</span>
                     </div>
                     <div class="sort-by-dropdown-wrap">
-                      <span>50 <i class="far fa-angle-down"></i></span>
+                      <span>3 <i class="far fa-angle-down"></i></span>
                     </div>
                   </div>
                   <div class="sort-by-dropdown">
                     <ul>
                       <li>
-                        <a class="active" href="#">50</a>
+                        <a class="active" href="?page_size=3">3</a>
                       </li>
                       <li>
-                        <a href="#">100</a>
+                        <a href="?page_size=6">6</a>
                       </li>
                       <li>
-                        <a href="#">150</a>
+                        <a href="?page_size=9">9</a>
                       </li>
                       <li>
-                        <a href="#">200</a>
-                      </li>
-                      <li>
-                        <a href="#">All</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="sort-by-cover">
-                  <div class="sort-by-product-wrap">
-                    <div class="sort-by">
-                      <span><i class="fa fa-sort-amount-down"></i>Sort by:</span>
-                    </div>
-                    <div class="sort-by-dropdown-wrap">
-                      <span>Featured <i class="far fa-angle-down"></i></span>
-                    </div>
-                  </div>
-                  <div class="sort-by-dropdown">
-                    <ul>
-                      <li>
-                        <a class="active" href="#">Featured</a>
-                      </li>
-                      <li>
-                        <a href="#">Price: Low to High</a>
-                      </li>
-                      <li>
-                        <a href="#">Price: High to Low</a>
-                      </li>
-                      <li>
-                        <a href="#">Release Date</a>
-                      </li>
-                      <li>
-                        <a href="#">Avg. Rating</a>
+                        <a href="?page_size=12">12</a>
                       </li>
                     </ul>
                   </div>
@@ -87,7 +55,7 @@
                   <div class="product-cart-wrap mb-30">
                     <div class="product-img-action-wrap">
                       <div class="product-img product-img-zoom">
-                        <a href="shop-product-right.html">
+                        <a href="{% url 'order:product_detail' parent_cat_product.uuid %}">
                           <img class="default-img" src="{{ parent_cat_product.product_image.first.img.url }}" alt="..." />
                           <img class="hover-img" src="{{ parent_cat_product.product_image.last.img.url }}" alt="..." />
                         </a>
@@ -101,9 +69,9 @@
                     </div>
                     <div class="product-content-wrap">
                       <div class="product-category">
-                        <a href="shop-grid-right.html">{{ parent_cat_product.brand.name|safe }}</a>
+                        <a href="{% url 'order:product_detail' parent_cat_product.uuid %}">{{ parent_cat_product.brand.name|safe }}</a>
                       </div>
-                      <h2><a href="shop-product-right.html">{{ parent_cat_product.title|slice:25 }}</a></h2>
+                      <h2><a href="{% url 'order:product_detail' parent_cat_product.uuid %}">{{ parent_cat_product.title|slice:25 }}</a></h2>
                       <div class="product-rate">
                         <div class="product-rating" style="width: {{ parent_cat_product.mid_stars_percent }}%;"></div>
                       </div>
@@ -127,30 +95,30 @@
             <div class="pagination-area mt-15 mb-md-5 mb-lg-0">
               <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-start">
-
                   {% if parent_cat_product.has_previous %}
-                  <li class="page-item">
-                    <a class="page-link" href="#"><i class="fa fa-angle-right"></i></a>
-                  </li>
+                    <li class="page-item">
+                      <a class="page-link" href="?page=1&page_size={{ page_size }}"><i class="fa fa-angle-left"></i></a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ parent_cat_product.previous_page_number }}&page_size={{ page_size }}">1</a>
+                    </li>
                   {% endif %}
+
                   <li class="page-item active">
-                    <a class="page-link" href="#">01</a>
+                    <button class="page-link">{{ parent_cat_product.number }}</button>
                   </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">02</a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">03</a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link dot" href="#">...</a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">16</a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#"><i class="fa fa-angle-right"></i></a>
-                  </li>
+
+                  {% if parent_cat_product.has_next %}
+                    {% if parent_cat_product.has_other_pages %}
+                      <h2 style="color: dodgerblue; font-family: 'Times New Roman', Times, serif;">...</h2>
+                    {% endif %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ parent_cat_product.next_page_number }}&page_size={{ page_size }}">{{ parent_cat_product.next_page_number }}</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ parent_cat_product.next_page_number }}&page_size={{ page_size }}"><i class="fa fa-angle-right"></i></a>
+                    </li>
+                  {% endif %}
                 </ul>
               </nav>
             </div>
@@ -185,43 +153,51 @@
                   <h5 class="widget-title mb-10">Fill by price</h5>
                   <div class="bt-1 border-color-1"></div>
                 </div>
-                <div class="price-filter">
-                  <div class="price-filter-inner">
-                    <div id="slider-range"></div>
-                    <div class="price_slider_amount">
-                      <div class="label-input">
-                        <span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
+                <form method="post">
+                  {% csrf_token %}
+                  <div class="price-filter">
+                    <div class="price-filter-inner">
+                      <div id="slider-range"></div>
+                      <div class="price_slider_amount">
+                        <div class="label-input">
+                          <span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="list-group">
-                  <div class="list-group-item mb-10 mt-10">
-                    <label class="fw-900">Color</label>
-                    <div class="custome-checkbox">
-                      <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="" />
-                      <label class="form-check-label" for="exampleCheckbox1"><span>Red (56)</span></label>
-                      <br />
-                      <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox2" value="" />
-                      <label class="form-check-label" for="exampleCheckbox2"><span>Green (78)</span></label>
-                      <br />
-                      <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox3" value="" />
-                      <label class="form-check-label" for="exampleCheckbox3"><span>Blue (54)</span></label>
-                    </div>
-                    <label class="fw-900 mt-15">Item Condition</label>
-                    <div class="custome-checkbox">
-                      <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox11" value="" />
-                      <label class="form-check-label" for="exampleCheckbox11"><span>New (1506)</span></label>
-                      <br />
-                      <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox21" value="" />
-                      <label class="form-check-label" for="exampleCheckbox21"><span>Refurbished (27)</span></label>
-                      <br />
-                      <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox31" value="" />
-                      <label class="form-check-label" for="exampleCheckbox31"><span>Used (45)</span></label>
+
+                  <div class="list-group">
+                    
+                    <div class="list-group-item mb-10 mt-10">
+                      <label class="fw-900">Color</label>
+                      <div class="custome-checkbox">
+                        {% for color in colors %}
+                          <input class="form-check-input" type="checkbox" name="checkboxcolor" id="example{{ forloop.counter }}" value="{{ color.uuid }}" {% if color.uuid in checked_color %}checked{% endif %}/>
+                          <label class="form-check-label" for="example{{ forloop.counter }}"><span>{{ color.name }} &nbsp; ({{ color.products_color.all|length }})</span></label>
+                          <br />
+                        {% endfor %}
+                      </div>
+                      <label class="fw-900 mt-15">Item Condition</label>
+                      <div class="custome-checkbox">
+                        {% for category in categories %}
+                          {% if category.get_children %}
+                            {% for category_child in category.get_children %}
+                              {% if category_child.size.get_children %}
+                                <h5>{{ category_child.size }}</h5>
+                                {% for size in category_child.size.get_children %}
+                                  <input class="form-check-input" type="checkbox" name="checkboxsize" id="size{{ size.uuid }}" value="{{ size.uuid }}" {% if size.uuid in checked_size %}checked{% endif %} />
+                                  <label class="form-check-label" for="size{{ size.uuid }}"><span>{{ size.name }} &nbsp; ({{ size.products_color.all|length }})</span></label>
+                                  <br />
+                                {% endfor %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <a href="shop-grid-right.html" class="btn btn-sm btn-default"><i class="fa fa-filter mr-5 ml-0"></i> Fillter</a>
+                  <button type="submit" class="btn btn-sm btn-default"><i class="fa fa-filter mr-5 ml-0"></i> Fillter</button>
+                </form>
               </div>
               <!-- Product sidebar Widget -->
               <div class="sidebar-widget product-sidebar mb-30 p-30 bg-grey border-radius-10">
@@ -251,15 +227,16 @@
                 {% endfor %}
               </div>
               <!-- Widget ads -->
-              <div class="sidebar-widget widget-ads mb-30">
-                  <div class="banner-img banner-1 wow fadeIn animated" style="visibility: visible; animation-name: fadeIn;">
-                    <img class="border-radius-10" src="{{monthlyBestSeller.0.img.url}}" alt="" />
-                    <div class="banner-text">
-                      {{ monthlyBestSeller.0.name|safe }}
-                      <a href="shop-grid-right.html">Shop Now <i class="fa fa-arrow-right"></i></a>
-                    </div>
+              {% comment %} <div class="sidebar-widget widget-ads mb-30">
+                <div class="banner-img banner-1 wow fadeIn animated" style="visibility: visible; animation-name: fadeIn;">
+                  {% if monthlyBestSeller[0].img.url %}
+                    <img class="border-radius-10" src="{{ monthlyBestSeller[0].img.url }}" alt="" />
+                  {% endif %} <div class="banner-text">
+                    {{ monthlyBestSeller[0].name|safe }}
+                    <a href="shop-grid-right.html">Shop Now <i class="fa fa-arrow-right"></i></a>
                   </div>
-              </div>
+                </div>
+              </div> {% endcomment %}
               <!-- Widget categories -->
               <div class="sidebar-widget widget_categories mb-50 p-30 bg-grey border-radius-10">
                 <div class="widget-header position-relative mb-20 pb-10">

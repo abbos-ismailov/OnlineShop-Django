@@ -31,6 +31,7 @@
       </div>
     </section>
 
+    <!-- Shipping -->
     <section class="featured pb-30 pt-10">
       <div class="container">
         <div class="row">
@@ -104,7 +105,7 @@
                   <div class="product-cart-wrap mb-30">
                     <div class="product-img-action-wrap">
                       <div class="product-img product-img-zoom">
-                        <a href="shop-product-right.html">
+                        <a href="{% url 'order:product_detail' product.uuid %}">
                           <img class="default-img" src="{{ product.product_image.first.img.url }}" alt="" />
                           <img class="hover-img" src="{{ product.product_image.last.img.url }}" alt="" />
                         </a>
@@ -118,9 +119,9 @@
                     </div>
                     <div class="product-content-wrap">
                       <div class="product-category">
-                        <a href="shop-grid-right.html">{{ product.brand.name|safe }}</a> <!-- Product Brandi Foreign Key -->
+                        <a href="{% url 'order:product_detail' product.uuid %}">{{ product.brand.name|safe }}</a> <!-- Product Brandi Foreign Key -->
                       </div>
-                      <h2><a href="shop-product-right.html">{{ product.title|slice:25 }}...</a></h2>
+                      <h2><a href="{% url 'order:product_detail' product.uuid %}">{{ product.title|slice:25 }}...</a></h2>
                       <div class="product-rate">
                         <div class="product-rating" style="width: {{ product.mid_stars_percent }}%;"></div>
                       </div>
@@ -362,7 +363,7 @@
             {% for brand in brands %}
               <div class="brand-logo">
                 {% if brand.img %}
-                <img class="img-grey-hover" src="{{ brand.img.url }}" alt="" />
+                  <img class="img-grey-hover" src="{{ brand.img.url }}" alt="" />
                 {% endif %}
               </div>
             {% endfor %}
@@ -419,7 +420,7 @@
                       <div class="product-cart-wrap mb-30">
                         <div class="product-img-action-wrap">
                           <div class="product-img product-img-zoom">
-                            <a href="shop-product-right.html">
+                            <a href="{% url 'order:product_detail' product.uuid %}">
                               <img class="default-img" src="{{ product.product_image.first.img.url }}" alt="" />
                               <img class="hover-img" src="{{ product.product_image.last.img.url }}" alt="" />
                             </a>
@@ -433,9 +434,9 @@
                         </div>
                         <div class="product-content-wrap">
                           <div class="product-category">
-                            <a href="shop-grid-right.html">{{ product.brand.name|safe }}</a> <!-- Product Brandi Foreign Key -->
+                            <a href="{% url 'order:product_detail' product.uuid %}">{{ product.brand.name|safe }}</a> <!-- Product Brandi Foreign Key -->
                           </div>
-                          <h2><a href="shop-product-right.html">{{ product.title|slice:25 }}...</a></h2>
+                          <h2><a href="{% url 'order:product_detail' product.uuid %}">{{ product.title|slice:25 }}...</a></h2>
                           <div class="product-rate">
                             <div class="product-rating" style="width: {{ product.mid_stars_percent }}%;"></div>
                           </div>
@@ -596,7 +597,8 @@
                       {% if bestSeller.products.discount %}
                         <span>{{ bestSeller.products.get_discount_price }}</span>
                         <span class="old-price">{{ bestSeller.products.price }}</span>
-                      {% else %} <!-- NArx torilash kerak -->
+                      {% else %}
+                        <!-- NArx torilash kerak -->
                         <span>{{ bestSeller.products.price }}</span>
                       {% endif %}
                     </div>
@@ -605,7 +607,7 @@
               {% endfor %}
             </div>
           </div>
-          
+
           <div class="col-lg-3 col-md-6">
             <h4 class="section-title style-1 mb-30 wow fadeIn animated">Hot Releases</h4>
             <div class="product-list-small wow fadeIn animated">

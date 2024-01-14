@@ -42,7 +42,8 @@ class TagsAdmin(admin.ModelAdmin):
 
 @admin.register(Brands)
 class BrandsAdmin(admin.ModelAdmin):
-    pass    
+    list_display = ["name"]
+    filter_horizontal = ("category", )
 
 
 @admin.register(BannerBottom)

@@ -1,0 +1,77 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+  <main class="main">
+    <div class="page-header breadcrumb-wrap">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="{% url 'products:home' %}" rel="nofollow">Home</a>
+          <span></span> Your Cart
+        </div>
+      </div>
+    </div>
+    <section class="mt-60 mb-60">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table shopping-summery text-center clean">
+                <thead>
+                  <tr class="main-heading">
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for cart_product in cart.cart_item_cart.all %}
+                    <tr>
+                      <td class="image product-thumbnail">
+                        <img src="{{ cart_product.product.product_image.first.img.url }}" alt="{{ item.product.title }}" />
+                      </td>
+                      <td class="product-des product-name">
+                        <p class="product-name">
+                          <a href="shop-product-right.html">{{ cart_product.product.title }}</a>
+                        </p>
+                        <p class="font-xs">
+                          {{ cart_product.product.brand }}
+                        </p>
+                      </td>
+                      <td class="price" data-title="Price">
+                        {% if cart_product.product.discount %}
+                        <span>{{ cart_product.product.get_discount_price|floatformat:0 }} so'm</span>
+                        <s>{{ cart_product.product.price }} so'm</s>
+                        {% else %}
+                        <span>{{ cart_product.product.price }} so'm</span>
+                        {% endif %}
+                       </td>
+                      <td class="text-center" data-title="Stock">
+                          {{ cart_product.quantity }}                       
+                      </td>
+                      <td class="text-right" data-title="Cart">
+                        <span>
+                          {{ cart_product.total_price }} so'm
+                        </span>
+                      </td>
+                      <td class="action" data-title="Remove">
+                        <a href="{% url 'order:delete_cart_item' cart_product.uuid %}" class="text-muted"><i class="fa fa-trash-alt"></i></a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="cart-action text-end">
+              <a href="{% url 'order:create_order' %}" class="btn btn-rounded"><i class="far fa-cart-plus mr-5"></i>Continue Shopping</a>
+            </div>
+            <div class="divider center_icon mt-50 mb-50">
+              <i class="fa fa-gem"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

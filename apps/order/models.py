@@ -1,6 +1,7 @@
 from django.db import models
 from apps.base.models import BaseModel
 from django.contrib.auth.models import User
+from apps.home.models import Color, Size
 # Create your models here.
 
 STATUS_CART = (
@@ -36,6 +37,8 @@ class CartItem(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_item_cart')
     quantity = models.IntegerField(default=1)
     total_price = models.IntegerField(default=0)
+    color = models.ForeignKey(Color, on_delete=models.SET_NULL, blank=True, null=True)
+    size = models.ForeignKey(Size, on_delete=models.SET_NULL, blank=True, null=True)
     
     def __str__(self) -> str:
         return self.product.title
@@ -43,7 +46,7 @@ class CartItem(BaseModel):
     def save(self, *args, **kwargs):
         self.total_price = self.product.get_discount_price * self.quantity
         return super().save(*args, **kwargs)
-  
+
 class Order(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='order_cart')
     status = models.CharField(max_length=255, choices=STATUS_ORDER, default='pending')

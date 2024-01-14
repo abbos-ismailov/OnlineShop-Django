@@ -1,0 +1,355 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <main class="main">
+    <div class="page-header breadcrumb-wrap">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html" rel="nofollow">Home</a>
+          <span></span> Headphone
+          <span></span> Ultra Bass HD450
+        </div>
+      </div>
+    </div>
+    <section class="mt-60 mb-60">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="product-detail accordion-detail">
+              <div class="row mb-50">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                  <div class="detail-gallery">
+                    <span class="zoom-icon"><i class="fa fa-search-plus"></i></span>
+                    <!-- MAIN SLIDES -->
+                    <div class="product-image-slider">
+                      {% for choosed_item__img in choosed_item.product_image.all %}
+                        <figure class="border-radius-10">
+                          <img src="{{ choosed_item__img.img.url }}" alt="{{ choosed_item.title }}" />
+                        </figure>
+                      {% endfor %}
+                    </div>
+                    <!-- THUMBNAILS -->
+                    <div class="slider-nav-thumbnails pl-15 pr-15">
+                      {% for choosed_item__img in choosed_item.product_image.all %}
+                        <div>
+                          <img src="{{ choosed_item__img.img.url }}" alt="{{ choosed_item.title }}" />
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <!-- End Gallery -->
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                  <div class="detail-info">
+                    <h2 class="title-detail">{{ choosed_item.title }}</h2>
+                    <div class="product-detail-rating">
+                      <div class="pro-details-brand">
+                        <span>Brands: <a href="shop-grid-right.html">{{ choosed_item.brand }}</a></span>
+                      </div>
+                      <div class="product-rate-cover text-end">
+                        <div class="product-rate d-inline-block">
+                          <div class="product-rating" style="width:{{ choosed_item.mid_stars_percent }}%"></div>
+                        </div>
+                        <span class="font-small ml-5 text-muted">({{ choosed_item.product_review.all|length }})</span>
+                      </div>
+                    </div>
+                    <div class="clearfix product-price-cover">
+                      <div class="product-price primary-color float-left">
+                        {% if choosed_item.discount %}
+                          <ins>
+                            <span class="text-brand">{{ choosed_item.get_discount_price|floatformat:0 }} so'm</span>
+                          </ins>
+                          <ins>
+                            <span class="old-price font-md ml-15">{{ choosed_item.price|floatformat:0 }} so'm</span>
+                          </ins>
+                          <span class="save-price font-md color3 ml-15">{{ choosed_item.discount }} % Off</span>
+                        {% else %}
+                          <ins>
+                            <span>${{ choosed_item.price|floatformat:0 }} so'm</span>
+                          </ins>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="bt-1 border-color-1 mt-15 mb-15">{{ choosed_item.description|safe }}</div>
+
+                    <form action="{% url 'order:create_cart_detail' choosed_item.uuid %}" method="post">
+                      {% csrf_token %}
+                      <div class="attr-detail attr-color mb-15">
+                        <strong class="mr-10">Color</strong>
+                        <ul class="list-filter d-flex align-items-center">
+                          {% for color in choosed_item.color.all %}
+                            <input style="width: 16px;" name="radiocolor" type="radio" id="{{ color.name }}" value="{{ color.uuid }}" />
+                            <label for="{{ color.name }}"><b style="font-weight: 500; color: {{ color.name }};">{{ color.name }}</b></label>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      <div class="attr-detail attr-size">
+                        <strong class="mr-10">Size</strong>
+                        <ul class="list-filter size-filter font-small">
+                          {% for size in choosed_item.size.all %}
+                            <li>
+                              <input type="radio" name="radiosize" value="{{ size.uuid }}" id="size.name" style="width: 16px;" />
+                              <a href="#">{{ size.name }}</a>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                      <div class="detail-extralink">
+                        <input class="w-25" type="number" name="product_quenty" placeholder="Nechta..." />
+                        <div class="product-extra-link2">
+                          <button type="submit" class="button button-add-to-cart">Add to cart</button>
+                          <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="far fa-heart"></i></a>
+                        </div>
+                      </div>
+                    </form>
+                    <ul class="product-meta font-xs color-grey mt-50">
+                      <li class="mb-5">
+                        SKU: <a href="#">FWM15VKT</a>
+                      </li>
+                      <li class="mb-5">
+                        Tags:{% for tag in choosed_item.tags.all %}
+                          <a href="#" rel="tag">{{ tag.name }}</a> &nbsp;
+                        {% endfor %}
+                      </li>
+                      <li>
+                        Availability:<span class="in-stock text-success ml-5">{{ choosed_item.quenty }} Items In Stock</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- Detail Info -->
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-10 m-auto entry-main-content">
+                  <h3 class="section-title style-1 mb-30">Description</h3>
+                  <div class="description mb-50">{{ choosed_item.discription_main|safe }}</div>
+                  <h3 class="section-title style-1 mb-30">Additional info</h3>
+                  <table class="font-md mb-30">
+                    <tbody>
+                      {% for additional in choosed_item.product_additional_info.all %}
+                        <tr class="stand-up">
+                          <th>{{ additional.key }}</th>
+                          <td>
+                            <p>{{ additional.value }}</p>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <!-- Social -->
+                  <div class="single-social-share clearfix mt-50 mb-15">
+                    <p class="mb-15 mt-30 font-sm">
+                      <i class="fa fa-share-alt mr-5"></i> Share this
+                    </p>
+                    <div class="mobile-social-icon wow fadeIn mb-sm-5 mb-md-0 animated">
+                      <a class="facebook" href="#"><i class="fab fa-facebook-f"></i></a>
+                      <a class="twitter" href="#"><i class="fab fa-twitter"></i></a>
+                      <a class="tumblr" href="#"><i class="fab fa-tumblr"></i></a>
+                      <a class="instagram" href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                  </div>
+                  <a class="mail-to-friend font-sm color-grey" href="#"><i class="far fa-envelope"></i> Email to a Friend</a>
+                  <h3 class="section-title style-1 mb-30 mt-30">Reviews ({{ choosed_item.product_review.all|length }})</h3>
+                  <!-- Comments -->
+                  <div class="comments-area">
+                    <div class="row">
+                      <div class="col-lg-8">
+                        <h4 class="mb-30">Customer questions & answers</h4>
+                        <div class="comment-list">
+                          {% for comment in choosed_item.product_review.all %}
+                            <div class="single-comment justify-content-between d-flex">
+                              <div class="user justify-content-between d-flex">
+                                <div class="thumb text-center">
+                                  <img src="{% static 'assets/imgs/page/avatar-6.jpg' %}" alt="..." />
+                                  <h6><a href="#">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></h6>
+                                  <p class="font-xxs">Since {{ comment.user.date_joined|date:'Y' }}</p>
+                                </div>
+                                <div class="desc">
+                                  <div class="product-rate d-inline-block">
+                                    <div class="product-rating" style="width:{{ comment.stars_percent }}%"></div>
+                                  </div>
+                                  <p>{{ comment.review }}</p>
+                                  <div class="d-flex justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                      <p class="font-xs mr-30">{{ comment.created_at }}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- comment form -->
+                  <div class="comment-form">
+                    <h4 class="mb-15">Add a review</h4>
+                    <div class="product-rate d-inline-block mb-30"></div>
+                    <div class="row">
+                      <div class="col-lg-8 col-md-12">
+                        <form class="form-contact comment_form" action="{% url 'products:create_comment' choosed_item.uuid %}" method="post" id="commentForm">
+                          {% csrf_token %}
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="form-group">
+                                <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9" placeholder="Write Comment"></textarea>
+                              </div>
+                            </div>
+                            <div class="col-sm-3">
+                              <div class="form-group">
+                                <input min="1" max="5" class="form-control" name="stars" id="stars" type="number" placeholder="Stars amount" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <button type="submit" class="button button-contactForm">Submit Review</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-60">
+                <div class="col-12">
+                  <h3 class="section-title style-1 mb-30">Related products</h3>
+                </div>
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+                    <div class="product-cart-wrap small hover-up">
+                      <div class="product-img-action-wrap">
+                        <div class="product-img product-img-zoom">
+                          <a href="shop-product-right.html" tabindex="0">
+                            <img class="default-img" src="assets/imgs/shop/product-2-1.jpg" alt="" />
+                            <img class="hover-img" src="assets/imgs/shop/product-2-2.jpg" alt="" />
+                          </a>
+                        </div>
+                        <div class="product-action-1">
+                          <a aria-label="Quick view" class="action-btn small hover-up" tabindex="0"><i class="far fa-search"></i></a>
+                          <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="far fa-heart"></i></a>
+                          <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="far fa-exchange-alt"></i></a>
+                        </div>
+                        <div class="product-badges product-badges-position product-badges-mrg">
+                          <span class="hot">Hot</span>
+                        </div>
+                      </div>
+                      <div class="product-content-wrap">
+                        <h2><a href="shop-product-right.html" tabindex="0">Ulstra Bass Headphone</a></h2>
+                        <div class="rating-result" title="90%">
+                          <span></span>
+                        </div>
+                        <div class="product-price">
+                          <span>$238.85</span>
+                          <span class="old-price">$245.8</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+                    <div class="product-cart-wrap small hover-up">
+                      <div class="product-img-action-wrap">
+                        <div class="product-img product-img-zoom">
+                          <a href="shop-product-right.html" tabindex="0">
+                            <img class="default-img" src="assets/imgs/shop/product-3-1.jpg" alt="" />
+                            <img class="hover-img" src="assets/imgs/shop/product-4-2.jpg" alt="" />
+                          </a>
+                        </div>
+                        <div class="product-action-1">
+                          <a aria-label="Quick view" class="action-btn small hover-up" tabindex="0"><i class="far fa-search"></i></a>
+                          <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="far fa-heart"></i></a>
+                          <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="far fa-exchange-alt"></i></a>
+                        </div>
+                        <div class="product-badges product-badges-position product-badges-mrg">
+                          <span class="sale">-12%</span>
+                        </div>
+                      </div>
+                      <div class="product-content-wrap">
+                        <h2><a href="shop-product-right.html" tabindex="0">Smart Bluetooth Speaker</a></h2>
+                        <div class="rating-result" title="90%">
+                          <span></span>
+                        </div>
+                        <div class="product-price">
+                          <span>$138.85</span>
+                          <span class="old-price">$145.8</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+                    <div class="product-cart-wrap small hover-up">
+                      <div class="product-img-action-wrap">
+                        <div class="product-img product-img-zoom">
+                          <a href="shop-product-right.html" tabindex="0">
+                            <img class="default-img" src="assets/imgs/shop/product-4-1.jpg" alt="" />
+                            <img class="hover-img" src="assets/imgs/shop/product-4-2.jpg" alt="" />
+                          </a>
+                        </div>
+                        <div class="product-action-1">
+                          <a aria-label="Quick view" class="action-btn small hover-up" tabindex="0"><i class="far fa-search"></i></a>
+                          <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="far fa-heart"></i></a>
+                          <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="far fa-exchange-alt"></i></a>
+                        </div>
+                        <div class="product-badges product-badges-position product-badges-mrg">
+                          <span class="new">New</span>
+                        </div>
+                      </div>
+                      <div class="product-content-wrap">
+                        <h2><a href="shop-product-right.html" tabindex="0">HomeSpeak 12UEA Goole</a></h2>
+                        <div class="rating-result" title="90%">
+                          <span></span>
+                        </div>
+                        <div class="product-price">
+                          <span>$738.85</span>
+                          <span class="old-price">$1245.8</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+                    <div class="product-cart-wrap small hover-up">
+                      <div class="product-img-action-wrap">
+                        <div class="product-img product-img-zoom">
+                          <a href="shop-product-right.html" tabindex="0">
+                            <img class="default-img" src="assets/imgs/shop/product-5-1.jpg" alt="" />
+                            <img class="hover-img" src="assets/imgs/shop/product-2-5.jpg" alt="" />
+                          </a>
+                        </div>
+                        <div class="product-action-1">
+                          <a aria-label="Quick view" class="action-btn small hover-up" tabindex="0"><i class="far fa-search"></i></a>
+                          <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="far fa-heart"></i></a>
+                          <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="far fa-exchange-alt"></i></a>
+                        </div>
+                        <div class="product-badges product-badges-position product-badges-mrg">
+                          <span class="hot">Hot</span>
+                        </div>
+                      </div>
+                      <div class="product-content-wrap">
+                        <h2><a href="shop-product-right.html" tabindex="0">Dadua Camera 4K 2021EF</a></h2>
+                        <div class="rating-result" title="90%">
+                          <span></span>
+                        </div>
+                        <div class="product-price">
+                          <span>$89.8</span>
+                          <span class="old-price">$98.8</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="banner-img banner-big wow fadeIn f-none animated mt-50">
+                <img class="border-radius-10" src="assets/imgs/banner/banner-4.png" alt="" />
+                <div class="banner-text">
+                  <h4 class="mb-15 mt-40 text-white">Repair Services</h4>
+                  <h2 class="fw-600 mb-20 text-white">We're an Apple <br />Authorised Service Provider</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

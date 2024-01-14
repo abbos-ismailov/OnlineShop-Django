@@ -40,3 +40,8 @@ class UserCreationForm(forms.ModelForm):
         user.save()
         
         return user
+
+
+# class UpdateProfileForm(forms.ModelForm):
+#     username = forms.CharField(widget=TextInput(attrs={'class': 'validate', "placeholder": "+998908533642"}))
+#     first_name = forms.CharField(widget=PasswordInput(attrs={"placeholder":"First_name"}))

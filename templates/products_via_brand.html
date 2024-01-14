@@ -1,0 +1,228 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <main class="main">
+    <section class="mt-40 mb-40">
+      <div class="container">
+        <div class="page-header breadcrumb-wrap">
+          <div class="container">
+            <div class="breadcrumb">
+              <a href="{% url 'products:home' %}" rel="nofollow">Home</a>
+              <span></span> Shop
+            </div>
+          </div>
+        </div>
+        <div class="row flex-row-reverse">
+          <div class="col-lg-9">
+            <div class="shop-product-fillter">
+              <div class="totall-product">
+                <p>
+                  <h2>{{ choosed_products.0.brand.name }}</h2>
+                  We found <strong class="text-brand">{{ choosed_products|length }}</strong> items for you!
+                </p>
+              </div>
+              <div class="sort-by-product-area">
+                <div class="sort-by-cover mr-10">
+                  <div class="sort-by-product-wrap">
+                    <div class="sort-by">
+                      <span><i class="fa fa-th"></i>Show:</span>
+                    </div>
+                    <div class="sort-by-dropdown-wrap">
+                      <span>3 <i class="far fa-angle-down"></i></span>
+                    </div>
+                  </div>
+                  <div class="sort-by-dropdown">
+                    <ul>
+                      <li>
+                        <a class="active" href="?page_size=3">3</a>
+                      </li>
+                      <li>
+                        <a href="?page_size=6">6</a>
+                      </li>
+                      <li>
+                        <a href="?page_size=9">9</a>
+                      </li>
+                      <li>
+                        <a href="?page_size=12">12</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row product-grid-3">
+              {% for choosed_product in choosed_products %}
+                <div class="col-lg-4 col-md-4 col-12 col-sm-6">
+                  <div class="product-cart-wrap mb-30">
+                    <div class="product-img-action-wrap">
+                      <div class="product-img product-img-zoom">
+                        <a href="{% url 'order:product_detail' choosed_product.uuid %}">
+                          <img class="default-img" src="{{ choosed_product.product_image.first.img.url }}" alt="..." />
+                          <img class="hover-img" src="{{ choosed_product.product_image.last.img.url }}" alt="..." />
+                        </a>
+                      </div>
+                      <div class="product-action-1">
+                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="{% url 'order:create_wishlist' choosed_product.uuid %}"><i class="far fa-heart"></i></a>
+                      </div>
+                      <div class="product-badges product-badges-position product-badges-mrg">
+                        <span class="{{ choosed_product.status }}">{{ choosed_product.status }}</span>
+                      </div>
+                    </div>
+                    <div class="product-content-wrap">
+                      <div class="product-category">
+                        <a href="{% url 'order:product_detail' choosed_product.uuid %}">{{ choosed_product.brand.name|safe }}</a>
+                      </div>
+                      <h2><a href="{% url 'order:product_detail' choosed_product.uuid %}">{{ choosed_product.title|slice:25 }}</a></h2>
+                      <div class="product-rate">
+                        <div class="product-rating" style="width: {{ choosed_product.mid_stars_percent }}%;"></div>
+                      </div>
+                      <div class="product-price">
+                        {% if choosed_product.discount %}
+                          <span>{{ choosed_product.get_discount_price }}</span>
+                          <span class="old-price">{{ choosed_product.price }}</span>
+                        {% else %}
+                          <span>{{ choosed_product.price }}</span>
+                        {% endif %}
+                      </div>
+                      <div class="product-action-1 show">
+                        <a aria-label="Add To Cart" class="action-btn hover-up" href="{% url 'order:create_cart' choosed_product.uuid %}"><i class="far fa-shopping-bag"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            <!-- pagination -->
+            <div class="pagination-area mt-15 mb-md-5 mb-lg-0">
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-start">
+                  {% if choosed_products.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page=1&page_size={{ page_size }}"><i class="fa fa-angle-left"></i></a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ choosed_products.previous_page_number }}&page_size={{ page_size }}">1</a>
+                    </li>
+                  {% endif %}
+
+                  <li class="page-item active">
+                    <button class="page-link">{{ choosed_products.number }}</button>
+                  </li>
+
+                  {% if choosed_products.has_next %}
+                    {% if choosed_products.has_other_pages %}
+                      <h2 style="color: dodgerblue; font-family: 'Times New Roman', Times, serif;">...</h2>
+                    {% endif %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ choosed_products.next_page_number }}&page_size={{ page_size }}">{{ choosed_products.next_page_number }}</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ choosed_products.next_page_number }}&page_size={{ page_size }}"><i class="fa fa-angle-right"></i></a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+
+
+          <div class="col-lg-3 primary-sidebar sticky-sidebar">
+            <div class="widget-area">
+              <!-- Fillter By Price -->
+              <div class="sidebar-widget price_range range mb-30">
+                <div class="widget-header position-relative mb-20 pb-10">
+                  <h5 class="widget-title mb-10">Fill by price</h5>
+                  <div class="bt-1 border-color-1"></div>
+                </div>
+                <form method="post">
+                  {% csrf_token %}
+                  <div class="price-filter">
+                    <div class="price-filter-inner">
+                      <div id="slider-range"></div>
+                      <div class="price_slider_amount">
+                        <div class="label-input">
+                          <span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="list-group">
+                    <div class="list-group-item mb-10 mt-10">
+                      <label class="fw-900">Color</label>
+                      <div class="custome-checkbox">
+                        {% for color in colors %}
+                          <input class="form-check-input" type="checkbox" name="checkboxcolor" id="example{{ forloop.counter }}" value="{{ color.uuid }}" {% if color.uuid in checked_color %}checked{% endif %}/>
+                          <label class="form-check-label" for="example{{ forloop.counter }}"><span>{{ color.name }} &nbsp; ({{ color.products_color.all|length }})</span></label>
+                          <br />
+                        {% endfor %}
+                      </div>
+                      <label class="fw-900 mt-15">Item Condition</label>
+                      <div class="custome-checkbox">
+                        {% for category in categories %}
+                          {% if category.get_children %}
+                            {% for category_child in category.get_children %}
+                              {% if category_child.size.get_children %}
+                                <h5>{{ category_child.size }}</h5>
+                                {% for size in category_child.size.get_children %}
+                                  <input class="form-check-input" type="checkbox" name="checkboxsize" id="size{{ size.uuid }}" value="{{ size.uuid }}" {% if size.uuid in checked_size %}checked{% endif %} />
+                                  <label class="form-check-label" for="size{{ size.uuid }}"><span>{{ size.name }} &nbsp; ({{ size.products_size.all|length }})</span></label>
+                                  <br />
+                                {% endfor %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-default"><i class="fa fa-filter mr-5 ml-0"></i> Fillter</button>
+                </form>
+              </div>
+              <!-- Product sidebar Widget -->
+              <div class="sidebar-widget product-sidebar mb-30 p-30 bg-grey border-radius-10">
+                <div class="widget-header position-relative mb-20 pb-10">
+                  <h5 class="widget-title mb-10">New products</h5>
+                  <div class="bt-1 border-color-1"></div>
+                </div>
+                {% for new_product in new_products %}
+                  {% if forloop.counter <= 3 %}
+                    <div class="single-post clearfix">
+                      <div class="image">
+                        {% if new_product.product_image.first.img.url %}
+                          <img src="{{ new_product.product_image.first.img.url }}" alt="#" />
+                        {% endif %}
+                      </div>
+                      <div class="content pt-10">
+                        <h5><a href="shop-product-detail.html">{{ new_product.title|slice:20 }}...</a></h5>
+                        {% if new_product.discount %}
+                          <p class="price mb-0 mt-5">{{ new_product.get_discount_price }}</p>
+                          <div class="product-rate">
+                            <div class="product-rating" style="width:{{ new_product.mid_stars_percent }}%"></div>
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <!-- Widget ads -->
+              {% comment %} <div class="sidebar-widget widget-ads mb-30">
+                <div class="banner-img banner-1 wow fadeIn animated" style="visibility: visible; animation-name: fadeIn;">
+                  {% if monthlyBestSeller[0].img.url %}
+                    <img class="border-radius-10" src="{{ monthlyBestSeller[0].img.url }}" alt="" />
+                  {% endif %} <div class="banner-text">
+                    {{ monthlyBestSeller[0].name|safe }}
+                    <a href="shop-grid-right.html">Shop Now <i class="fa fa-arrow-right"></i></a>
+                  </div>
+                </div>
+              </div> {% endcomment %}
+              <!-- Widget categories -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

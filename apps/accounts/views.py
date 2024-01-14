@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from django.views.generic import View
+from django.views.generic import View, UpdateView
 from .forms import CustomAuthForm, UserCreationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-
+from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 # Create your views here.
 
 
@@ -62,10 +63,26 @@ class RegisterView(View):
 
             return render(request, "accounts/register.html", context)
 
+
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request): 
+        user = User.objects.get(id=request.user.id)
         context = {
-
+            "user": user
         }
         return render(request, "accounts/profile.html", context)
+
+
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    fields = ['first_name', "last_name", "username"]
     
+    def get_success_url(self):
+        return reverse_lazy("accounts:profile")
+
+    template_name = "accounts/update_profile.html"
+    
+    def test_func(self): #### Nimaga buni ichiga kirmadi
+        obj = self.get_object()
+        print(obj, "Bu obj <-------------------------------")
+        return obj.user == self.request.user

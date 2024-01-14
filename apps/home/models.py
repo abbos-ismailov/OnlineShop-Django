@@ -15,13 +15,20 @@ STATUS = (
     ('sale', 'SALE'),
 )
 
+class Size(MPTTModel, BaseModel):
+    name = models.CharField(max_length=120)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+
+   
+    def __str__(self):
+        return self.name
 
 class Category(MPTTModel, BaseModel):
     name = RichTextField()
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     icon = models.ImageField(upload_to='category/icons', null=True, blank=True)
     img = models.ImageField(upload_to='category/images', null=True, blank=True)
-    
+    size = models.ForeignKey(Size, on_delete=models.SET_NULL, null=True, blank=True, related_name="size_category")
 
     def __str__(self):
         return self.name
@@ -29,9 +36,9 @@ class Category(MPTTModel, BaseModel):
         
     
 class Brands(BaseModel):
-    name = RichTextField()
+    name = models.CharField(max_length=120)
     img = models.FileField(upload_to='brands/images', null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ManyToManyField(Category, blank=True, related_name="category_to_brand")
 
     def __str__(self):
         return self.name
@@ -47,7 +54,8 @@ class BannerBottom(BaseModel):
     
     
 class Color(BaseModel):
-    name = RichTextField()
+    name = models.CharField(max_length=120)
+    code = models.CharField(max_length=120, null=True, blank=True)
     def __str__(self):
         return self.name
 
@@ -58,30 +66,24 @@ class Tags(BaseModel):
         return self.name
 
 
-class Size(MPTTModel, BaseModel):
-    name = RichTextField()
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
-   
-    def __str__(self):
-        return self.name
 
 
 
 class Product(BaseModel):
-    category = models.ManyToManyField(Category, null=True, blank=True, related_name="category_products")
+    category = models.ManyToManyField(Category, related_name="category_products")
     title = models.CharField(max_length=255)
     brand = models.ForeignKey(Brands, on_delete=models.CASCADE, null=True, blank=True, related_name='products_brand')
     price = models.BigIntegerField()
     discount = models.IntegerField(default=0)
-    discription = RichTextField()
+    description = RichTextField()
     color = models.ManyToManyField(Color, blank=True, related_name='products_color')
     size = models.ManyToManyField(Size, blank=True, related_name='products_size')
     quenty = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tags, blank=True, related_name='products_tags')
     discription_main = RichTextField()
     status = models.CharField(max_length=255, choices=STATUS, default='new')
-    stars_percent = models.IntegerField()
+    # stars_percent = models.IntegerField()
     
     @property
     def get_discount_price(self):
@@ -178,6 +180,10 @@ class ProductReview(BaseModel):
             MaxValueValidator(5)
         ])
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True, related_name='product_review')
+    
+    def stars_percent(self):
+        percent = self.stars * 20
+        return percent 
     
     def __str__(self) -> str:
         return self.product.title
